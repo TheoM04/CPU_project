@@ -1,0 +1,25 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.all;
+
+ENTITY nor_gate IS
+PORT (A, B: IN STD_LOGIC ;
+		Q: OUT STD_LOGIC) ;
+END nor_gate;
+
+ARCHITECTURE stracturalNOR OF nor_gate IS
+COMPONENT not_gate IS
+PORT (A: IN STD_LOGIC;
+		Q: OUT STD_LOGIC);
+END COMPONENT;
+
+COMPONENT or_gate IS
+PORT (A, B: IN STD_LOGIC;
+		Q: OUT STD_LOGIC);
+END COMPONENT;
+
+SIGNAL C: STD_LOGIC;
+
+BEGIN
+	V1: or_gate PORT MAP(A,B,C);
+	V2: not_gate PORT MAP(C,Q);
+END stracturalNOR;
