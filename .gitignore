@@ -38,11 +38,22 @@
 
 # software binary files
 
-# Ignore Quartus/FPGA database and temporary folders
+# Quartus temporary and compilation files
 db/
 incremental_db/
 output_files/
-*.rdr.flock
+greybox_tmp/
+hc_output/
+*.rpt
+*.summary
+*.jdi
+*.done
+*.pin
+*.qws
+*.bak
+*.smsg
+*.vcd
+*.swp
 
 
 !.gitignore
@@ -58,6 +69,7 @@ output_files/
 !class.ptf
 !.tbd
 !.sof
+!.vwf
 ## tbd
 
 !.tcl
