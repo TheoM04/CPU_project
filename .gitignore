@@ -44,6 +44,8 @@ incremental_db/
 output_files/
 greybox_tmp/
 hc_output/
+simulation/
+modelsim/
 *.rpt
 *.summary
 *.jdi
@@ -54,7 +56,10 @@ hc_output/
 *.smsg
 *.vcd
 *.swp
-
+*.vmo
+*.wlf
+_info
+msim_transcript
 
 !.gitignore
 ##
@@ -70,6 +75,7 @@ hc_output/
 !.tbd
 !.sof
 !.vwf
+!.do
 ## tbd
 
 !.tcl
