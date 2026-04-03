@@ -60,6 +60,8 @@ modelsim/
 *.wlf
 _info
 msim_transcript
+c5_pin_model_dump.txt
+c5_pin_model*.txt
 
 !.gitignore
 ##
