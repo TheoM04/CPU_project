@@ -2,12 +2,23 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 
 ENTITY one_bit_half_adder IS
-PORT (a, b: IN STD_LOGIC ;
-		sum, cout: OUT STD_LOGIC) ;
+PORT (A, B: IN STD_LOGIC ;
+		Sum, Cout: OUT STD_LOGIC) ;
 END one_bit_half_adder;
 
-ARCHITECTURE Behaviour OF one_bit_half_adder IS
+ARCHITECTURE Stractural OF one_bit_half_adder IS
+
+COMPONENT xor_gate IS
+PORT (A, B: IN STD_LOGIC ;
+		Q: OUT STD_LOGIC) ;
+END COMPONENT;
+
+COMPONENT and_gate IS
+PORT (A, B: IN STD_LOGIC ;
+		Q: OUT STD_LOGIC) ;
+END COMPONENT;
+
 BEGIN
-	sum <= a XOR b;
-	cout <= a AND b;
-END Behaviour;
+	V1: xor_gate PORT MAP(A, B, Sum);
+	V2: and_gate PORT MAP(A, B, Cout);
+END Stractural;
