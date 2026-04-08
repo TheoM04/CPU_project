@@ -3,9 +3,9 @@ use IEEE.STD_LOGIC_1164.all;
 use IEEE.STD_LOGIC_SIGNED.all;
 
 ENTITY alu_1bit IS
-PORT (A, B, Cin, geq_bit, b_inv : IN STD_LOGIC;
+PORT (A, B, Cin, sub_mode, geq_bit: IN STD_LOGIC;
 		SEL: IN STD_LOGIC_VECTOR(2 downto 0);
-		Q, Cout: OUT STD_LOGIC) ;
+		Q, Cout: OUT STD_LOGIC);
 END alu_1bit;
 
 ARCHITECTURE stractural OF alu_1bit IS
@@ -59,7 +59,9 @@ SIGNAL s_add, b_n, b_inp: STD_LOGIC;
 BEGIN
 	
 	B_NOT: not_gate PORT MAP(B, b_n);
-	B_INVR: mux2to1 PORT MAP(B, b_n, b_inv, b_inp);
+	
+	--if we are in sub mode we invert b else we keep it the same and then pass it as input to the adder
+	B_INVR: mux2to1 PORT MAP(B, b_n, sub_mode, b_inp);
 	
 	ADD: one_bit_full_adder PORT MAP(A, b_inp, Cin, s_add, Cout);
 	
