@@ -60,6 +60,7 @@ modelsim/
 *.wlf
 _info
 msim_transcript
+cr_ie_info.json
 c5_pin_model_dump.txt
 c5_pin_model*.txt
 
