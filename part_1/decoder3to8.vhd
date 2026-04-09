@@ -25,11 +25,15 @@ BEGIN
 	INV3: not_gate PORT MAP(inp(2), inp_n(2));
 	
 	A1: and3_gate PORT MAP(inp_n(0), inp_n(1), inp_n(2), Y(0));
-	A2: and3_gate PORT MAP(inp_n(0), inp_n(1), inp(2), Y(1));
+	A2: and3_gate PORT MAP(inp(0), inp_n(1), inp_n(2), Y(1));
+	
 	A3: and3_gate PORT MAP(inp_n(0), inp(1), inp_n(2), Y(2));
-	A4: and3_gate PORT MAP(inp_n(0), inp(1), inp(2), Y(3));
-	A5: and3_gate PORT MAP(inp(0), inp_n(1), inp_n(2), Y(4));
+	A4: and3_gate PORT MAP(inp(0), inp(1), inp_n (2), Y(3));
+	
+	A5: and3_gate PORT MAP(inp_n(0), inp_n(1), inp(2), Y(4));
 	A6: and3_gate PORT MAP(inp(0), inp_n(1), inp(2), Y(5));
-	A7: and3_gate PORT MAP(inp(0), inp(1), inp_n(2), Y(6));
+	
+	A7: and3_gate PORT MAP(inp_n(0), inp(1), inp(2), Y(6));
 	A8: and3_gate PORT MAP(inp(0), inp(1), inp(2), Y(7));
+	
 END stractural;
