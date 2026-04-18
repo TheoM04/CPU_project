@@ -1,2 +1,2 @@
 -Change jump_address.vhd to be structural by using a 16 bit full adder.
--Change ff_combined to be structural. Replace q <= q_rising when sel = '0' else q_falling; with a multiplexer.
+-ff-combined behavioural to structural
