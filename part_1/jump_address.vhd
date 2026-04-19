@@ -10,14 +10,21 @@ entity jump_address is
 	);
 end jump_address;
 
-architecture behavioral of jump_address is
+architecture structural of jump_address is
 
-		signal extended	: std_logic_vector (15 downto 0);
-		signal doubled		: std_logic_vector (15 downto 0);
+		component sixteen_bit_full_adder is
+		PORT (
+			A, B : IN STD_LOGIC_VECTOR(15 downto 0);
+			Cin : IN  STD_LOGIC;
+			Sum : OUT STD_LOGIC_VECTOR(15 downto 0); 
+			Cout : OUT STD_LOGIC);
+		end component;
+
+		signal extended, doubled : std_logic_vector (15 downto 0);
+		signal Cout : std_logic;
 		
 begin
 		extended <= (15 downto 12 => jumpAD(11)) & jumpAD;
 		doubled 	<= extended (14 downto 0) & '0';
-		EjumpAD  <= doubled + instrP2AD;
-		
-end behavioral;
+		FA: sixteen_bit_full_adder PORT MAP(doubled, instrP2AD, '0', EjumpAD, Cout);	
+end structural;
