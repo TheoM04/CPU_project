@@ -34,6 +34,14 @@ component ff_falling
 	);	
 end component;
 
+component mux2to1
+    port(in0 : in std_logic;
+			in1 : in std_logic;
+			Sel : in std_logic;
+         Q : out std_logic);
+end component;
+
+
 	signal q_rising	: std_logic_vector (15 downto 0);
 	signal q_falling	: std_logic_vector (15 downto 0);
 	
@@ -56,6 +64,13 @@ begin
 		q   => q_falling
 	);
 	
-	q <= q_rising when sel = '0' else q_falling;
+	MUX_GENER: for i in 0 to 15 generate
+        MUX_I: mux2to1 port map(
+            in0 => q_rising(i),
+            in1 => q_falling(i),
+            Sel => sel,
+            Q   => q(i)
+        );
+    end generate;
 	
 end structural;
