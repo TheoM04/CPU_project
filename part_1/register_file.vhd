@@ -51,13 +51,13 @@ BEGIN
 
     REG0: register_zero PORT MAP(q => r0);
 
-    REG1: register_16bit PORT MAP(write1, clk, load_reg(1), '0', r1);
-    REG2: register_16bit PORT MAP(write1, clk, load_reg(2), '0', r2);
-    REG3: register_16bit PORT MAP(write1, clk, load_reg(3), '0', r3);
-    REG4: register_16bit PORT MAP(write1, clk, load_reg(4), '0', r4);
-    REG5: register_16bit PORT MAP(write1, clk, load_reg(5), '0', r5);
-    REG6: register_16bit PORT MAP(write1, clk, load_reg(6), '0', r6);
-    REG7: register_16bit PORT MAP(write1, clk, load_reg(7), '0', r7);
+    REG1: register_16bit PORT MAP(write1, clk, load_reg(1), '1', r1);
+    REG2: register_16bit PORT MAP(write1, clk, load_reg(2), '1', r2);
+    REG3: register_16bit PORT MAP(write1, clk, load_reg(3), '1', r3);
+    REG4: register_16bit PORT MAP(write1, clk, load_reg(4), '1', r4);
+    REG5: register_16bit PORT MAP(write1, clk, load_reg(5), '1', r5);
+    REG6: register_16bit PORT MAP(write1, clk, load_reg(6), '1', r6);
+    REG7: register_16bit PORT MAP(write1, clk, load_reg(7), '1', r7);
 
     MUX_A: mux8to1_16bit PORT MAP(r0, r1, r2, r3, r4, r5, r6, r7, readAD1, Read1);
     MUX_B: mux8to1_16bit PORT MAP(r0, r1, r2, r3, r4, r5, r6, r7, readAD2, Read2);
