@@ -1,8 +1,8 @@
 /*<simulation_settings>
-<ftestbench_cmd>quartus_eda --gen_testbench --tool=modelsim_oem --format=vhdl --write_settings_files=off cpu_part_1 -c cpu_part_1 --vector_source="C:/Users/theod/OneDrive/Desktop/aueb/Semester 8/Computer Architecture/projects/cpu_project/part_1/Waveform1.vwf" --testbench_file="C:/Users/theod/OneDrive/Desktop/aueb/Semester 8/Computer Architecture/projects/cpu_project/part_1/simulation/qsim/Waveform1.vwf.vht"</ftestbench_cmd>
-<ttestbench_cmd>quartus_eda --gen_testbench --tool=modelsim_oem --format=vhdl --write_settings_files=off cpu_part_1 -c cpu_part_1 --vector_source="C:/Users/theod/OneDrive/Desktop/aueb/Semester 8/Computer Architecture/projects/cpu_project/part_1/Waveform1.vwf" --testbench_file="C:/Users/theod/OneDrive/Desktop/aueb/Semester 8/Computer Architecture/projects/cpu_project/part_1/simulation/qsim/Waveform1.vwf.vht"</ttestbench_cmd>
-<fnetlist_cmd>quartus_eda --write_settings_files=off --simulation --functional=on --flatten_buses=off --tool=modelsim_oem --format=vhdl --output_directory="C:/Users/theod/OneDrive/Desktop/aueb/Semester 8/Computer Architecture/projects/cpu_project/part_1/simulation/qsim/" cpu_part_1 -c cpu_part_1</fnetlist_cmd>
-<tnetlist_cmd>quartus_eda --write_settings_files=off --simulation --functional=off --flatten_buses=off --timescale=1ps --tool=modelsim_oem --format=vhdl --output_directory="C:/Users/theod/OneDrive/Desktop/aueb/Semester 8/Computer Architecture/projects/cpu_project/part_1/simulation/qsim/" cpu_part_1 -c cpu_part_1</tnetlist_cmd>
+<ftestbench_cmd>quartus_eda --gen_testbench --tool=modelsim_oem --format=vhdl --write_settings_files=off cpu_part_1 -c cpu_part_1 --vector_source="C:/intelFPGA_lite/19.1/projects/CPU_project/part_1/Waveform1.vwf" --testbench_file="C:/intelFPGA_lite/19.1/projects/CPU_project/part_1/simulation/qsim/Waveform1.vwf.vht"</ftestbench_cmd>
+<ttestbench_cmd>quartus_eda --gen_testbench --tool=modelsim_oem --format=vhdl --write_settings_files=off cpu_part_1 -c cpu_part_1 --vector_source="C:/intelFPGA_lite/19.1/projects/CPU_project/part_1/Waveform1.vwf" --testbench_file="C:/intelFPGA_lite/19.1/projects/CPU_project/part_1/simulation/qsim/Waveform1.vwf.vht"</ttestbench_cmd>
+<fnetlist_cmd>quartus_eda --write_settings_files=off --simulation --functional=on --flatten_buses=off --tool=modelsim_oem --format=vhdl --output_directory="C:/intelFPGA_lite/19.1/projects/CPU_project/part_1/simulation/qsim/" cpu_part_1 -c cpu_part_1</fnetlist_cmd>
+<tnetlist_cmd>quartus_eda --write_settings_files=off --simulation --functional=off --flatten_buses=off --timescale=1ps --tool=modelsim_oem --format=vhdl --output_directory="C:/intelFPGA_lite/19.1/projects/CPU_project/part_1/simulation/qsim/" cpu_part_1 -c cpu_part_1</tnetlist_cmd>
 <modelsim_script>onerror {exit -code 1}
 vlib work
 vcom -work work cpu_part_1.vho
@@ -453,9 +453,9 @@ TRANSITION_LIST("clk")
 		REPEAT = 1;
 		NODE
 		{
-			REPEAT = 20;
-			LEVEL 0 FOR 5.0;
-			LEVEL 1 FOR 5.0;
+			REPEAT = 10;
+			LEVEL 0 FOR 10.0;
+			LEVEL 1 FOR 10.0;
 		}
 	}
 }
@@ -465,8 +465,10 @@ TRANSITION_LIST("d[15]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 100.0;
-		LEVEL 1 FOR 100.0;
+		LEVEL 0 FOR 20.0;
+		LEVEL 1 FOR 70.0;
+		LEVEL 0 FOR 40.0;
+		LEVEL 1 FOR 70.0;
 	}
 }
 
@@ -475,8 +477,8 @@ TRANSITION_LIST("d[14]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 140.0;
-		LEVEL 1 FOR 60.0;
+		LEVEL 0 FOR 130.0;
+		LEVEL 1 FOR 70.0;
 	}
 }
 
@@ -485,8 +487,10 @@ TRANSITION_LIST("d[13]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 100.0;
-		LEVEL 1 FOR 100.0;
+		LEVEL 0 FOR 20.0;
+		LEVEL 1 FOR 70.0;
+		LEVEL 0 FOR 40.0;
+		LEVEL 1 FOR 70.0;
 	}
 }
 
@@ -495,10 +499,8 @@ TRANSITION_LIST("d[12]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 60.0;
-		LEVEL 1 FOR 40.0;
-		LEVEL 0 FOR 40.0;
-		LEVEL 1 FOR 60.0;
+		LEVEL 0 FOR 90.0;
+		LEVEL 1 FOR 110.0;
 	}
 }
 
@@ -507,8 +509,10 @@ TRANSITION_LIST("d[11]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 100.0;
-		LEVEL 1 FOR 100.0;
+		LEVEL 0 FOR 20.0;
+		LEVEL 1 FOR 70.0;
+		LEVEL 0 FOR 40.0;
+		LEVEL 1 FOR 70.0;
 	}
 }
 
@@ -517,8 +521,8 @@ TRANSITION_LIST("d[10]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 140.0;
-		LEVEL 1 FOR 60.0;
+		LEVEL 0 FOR 130.0;
+		LEVEL 1 FOR 70.0;
 	}
 }
 
@@ -527,8 +531,8 @@ TRANSITION_LIST("d[9]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 60.0;
-		LEVEL 1 FOR 140.0;
+		LEVEL 0 FOR 20.0;
+		LEVEL 1 FOR 180.0;
 	}
 }
 
@@ -537,8 +541,10 @@ TRANSITION_LIST("d[8]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 100.0;
-		LEVEL 1 FOR 100.0;
+		LEVEL 0 FOR 20.0;
+		LEVEL 1 FOR 70.0;
+		LEVEL 0 FOR 40.0;
+		LEVEL 1 FOR 70.0;
 	}
 }
 
@@ -547,8 +553,10 @@ TRANSITION_LIST("d[7]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 100.0;
-		LEVEL 1 FOR 100.0;
+		LEVEL 0 FOR 20.0;
+		LEVEL 1 FOR 70.0;
+		LEVEL 0 FOR 40.0;
+		LEVEL 1 FOR 70.0;
 	}
 }
 
@@ -557,8 +565,10 @@ TRANSITION_LIST("d[6]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 100.0;
-		LEVEL 1 FOR 100.0;
+		LEVEL 0 FOR 20.0;
+		LEVEL 1 FOR 70.0;
+		LEVEL 0 FOR 40.0;
+		LEVEL 1 FOR 70.0;
 	}
 }
 
@@ -567,10 +577,8 @@ TRANSITION_LIST("d[5]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 60.0;
-		LEVEL 1 FOR 40.0;
-		LEVEL 0 FOR 40.0;
-		LEVEL 1 FOR 60.0;
+		LEVEL 0 FOR 90.0;
+		LEVEL 1 FOR 110.0;
 	}
 }
 
@@ -579,10 +587,8 @@ TRANSITION_LIST("d[4]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 60.0;
-		LEVEL 1 FOR 40.0;
-		LEVEL 0 FOR 40.0;
-		LEVEL 1 FOR 60.0;
+		LEVEL 0 FOR 90.0;
+		LEVEL 1 FOR 110.0;
 	}
 }
 
@@ -591,8 +597,10 @@ TRANSITION_LIST("d[3]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 100.0;
-		LEVEL 1 FOR 100.0;
+		LEVEL 0 FOR 20.0;
+		LEVEL 1 FOR 70.0;
+		LEVEL 0 FOR 40.0;
+		LEVEL 1 FOR 70.0;
 	}
 }
 
@@ -601,8 +609,8 @@ TRANSITION_LIST("d[2]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 60.0;
-		LEVEL 1 FOR 140.0;
+		LEVEL 0 FOR 20.0;
+		LEVEL 1 FOR 180.0;
 	}
 }
 
@@ -611,8 +619,8 @@ TRANSITION_LIST("d[1]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 140.0;
-		LEVEL 1 FOR 60.0;
+		LEVEL 0 FOR 130.0;
+		LEVEL 1 FOR 70.0;
 	}
 }
 
@@ -621,8 +629,10 @@ TRANSITION_LIST("d[0]")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 100.0;
-		LEVEL 1 FOR 100.0;
+		LEVEL 0 FOR 20.0;
+		LEVEL 1 FOR 70.0;
+		LEVEL 0 FOR 40.0;
+		LEVEL 1 FOR 70.0;
 	}
 }
 
@@ -631,10 +641,9 @@ TRANSITION_LIST("en")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 60.0;
-		LEVEL 1 FOR 60.0;
-		LEVEL 0 FOR 20.0;
-		LEVEL 1 FOR 60.0;
+		LEVEL 0 FOR 50.0;
+		LEVEL 1 FOR 80.0;
+		LEVEL 0 FOR 70.0;
 	}
 }
 
@@ -787,9 +796,9 @@ TRANSITION_LIST("rst")
 	NODE
 	{
 		REPEAT = 1;
-		LEVEL 0 FOR 40.0;
-		LEVEL 1 FOR 120.0;
-		LEVEL 0 FOR 40.0;
+		LEVEL 0 FOR 20.0;
+		LEVEL 1 FOR 150.0;
+		LEVEL 0 FOR 30.0;
 	}
 }
 
