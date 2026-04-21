@@ -7,8 +7,8 @@ entity register_zero is
 		);
 end register_zero;
 
-architecture behavioral of register_zero is
+architecture stractural of register_zero is
 begin
 	q <= (others => '0');
-end behavioral;
+end stractural;
 	
