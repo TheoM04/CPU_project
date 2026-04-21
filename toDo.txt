@@ -3,3 +3,5 @@
 -decoder3to8 16 bit
 -waveform for decoder3to8 16 bit
 -waveform for mux8to1 1 bit
+-alu rtl screeshot
+ff-rising ff-falling ???
