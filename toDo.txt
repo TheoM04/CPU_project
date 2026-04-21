@@ -1,2 +1,2 @@
 -Change jump_address.vhd to be structural by using a 16 bit full adder.
--ff-combined behavioural to structural
+-sign extender
