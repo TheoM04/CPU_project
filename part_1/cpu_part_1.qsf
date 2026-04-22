@@ -39,7 +39,7 @@
 
 set_global_assignment -name FAMILY "Cyclone V"
 set_global_assignment -name DEVICE 5CGXFC7C7F23C8
-set_global_assignment -name TOP_LEVEL_ENTITY jump_address
+set_global_assignment -name TOP_LEVEL_ENTITY register_file
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 19.1.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "14:32:26  APRIL 03, 2026"
 set_global_assignment -name LAST_QUARTUS_VERSION "19.1.0 Lite Edition"
@@ -56,16 +56,6 @@ set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_
 set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_boundary_scan
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
-set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform4.vwf
-set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform3.vwf
-set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform2.vwf
-set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform1.vwf
-set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform10.vwf
-set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform9.vwf
-set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform8.vwf
-set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform7.vwf
-set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform6.vwf
-set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform5.vwf
 set_global_assignment -name VHDL_FILE register_16bit.vhd
 set_global_assignment -name VHDL_FILE shift_register.vhd
 set_global_assignment -name VHDL_FILE register_zero.vhd
@@ -88,15 +78,24 @@ set_global_assignment -name VHDL_FILE alu_1bit.vhd
 set_global_assignment -name VHDL_FILE alu_16bit.vhd
 set_global_assignment -name VHDL_FILE and3_gate.vhd
 set_global_assignment -name VHDL_FILE decoder3to8.vhd
-set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform.vwf
 set_global_assignment -name VHDL_FILE sixteen_bit_full_adder.vhd
 set_global_assignment -name VHDL_FILE register_file.vhd
 set_global_assignment -name VHDL_FILE mux8to1_16bit.vhd
-set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform11.vwf
-set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform12.vwf
-set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform13.vwf
 set_global_assignment -name VHDL_FILE decoder3to8_16bit.vhd
-set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform14.vwf
+set_global_assignment -name VECTOR_WAVEFORM_FILE jump_address_waveform.vwf
+set_global_assignment -name VECTOR_WAVEFORM_FILE alu_16bit_waveform.vwf
+set_global_assignment -name VECTOR_WAVEFORM_FILE register_zero_waveform.vwf
+set_global_assignment -name VECTOR_WAVEFORM_FILE register_16bit_waveform.vwf
+set_global_assignment -name VECTOR_WAVEFORM_FILE decoder3to8_waveform.vwf
+set_global_assignment -name VECTOR_WAVEFORM_FILE mux8to1_16bit_waveform.vwf
+set_global_assignment -name VECTOR_WAVEFORM_FILE sign_extender_waveform.vwf
+set_global_assignment -name VECTOR_WAVEFORM_FILE ff_combined_waveform.vwf
+set_global_assignment -name VECTOR_WAVEFORM_FILE register_file_waveform.vwf
+set_global_assignment -name VECTOR_WAVEFORM_FILE shift_register_waveform.vwf
+set_global_assignment -name VECTOR_WAVEFORM_FILE mux8to1_waveform.vwf
+set_global_assignment -name VECTOR_WAVEFORM_FILE decoder3to8_16bit_waveform.vwf
+set_global_assignment -name VECTOR_WAVEFORM_FILE ff_rising_waveform.vwf
+set_global_assignment -name VECTOR_WAVEFORM_FILE ff_falling_waveform.vwf
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
