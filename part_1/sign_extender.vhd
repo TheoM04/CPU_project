@@ -8,8 +8,23 @@ entity sign_extender is
 	);
 end sign_extender;
 
-architecture behavioral of sign_extender is
+architecture structural of sign_extender is
 begin
-		ext <= (15 downto 6 => imm(5)) & imm;
-end behavioral;
+		 ext(0)  <= imm(0);
+		 ext(1)  <= imm(1);
+		 ext(2)  <= imm(2);
+		 ext(3)  <= imm(3);
+		 ext(4)  <= imm(4);
+		 ext(5)  <= imm(5);
+		 ext(6)  <= imm(5);
+		 ext(7)  <= imm(5);
+		 ext(8)  <= imm(5);
+		 ext(9)  <= imm(5);
+		 ext(10) <= imm(5);
+		 ext(11) <= imm(5);
+		 ext(12) <= imm(5);
+		 ext(13) <= imm(5);
+		 ext(14) <= imm(5);
+		 ext(15) <= imm(5);
+end structural;
 

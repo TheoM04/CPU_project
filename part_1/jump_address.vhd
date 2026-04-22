@@ -24,7 +24,41 @@ architecture structural of jump_address is
 		signal Cout : std_logic;
 		
 begin
-		extended <= (15 downto 12 => jumpAD(11)) & jumpAD;
-		doubled 	<= extended (14 downto 0) & '0';
-		FA: sixteen_bit_full_adder PORT MAP(doubled, instrP2AD, '0', EjumpAD, Cout);	
+		--extend 12 se 16 bits
+    extended(0)  <= jumpAD(0);
+    extended(1)  <= jumpAD(1);
+    extended(2)  <= jumpAD(2);
+    extended(3)  <= jumpAD(3);
+    extended(4)  <= jumpAD(4);
+    extended(5)  <= jumpAD(5);
+    extended(6)  <= jumpAD(6);
+    extended(7)  <= jumpAD(7);
+    extended(8)  <= jumpAD(8);
+    extended(9)  <= jumpAD(9);
+    extended(10) <= jumpAD(10);
+    extended(11) <= jumpAD(11);
+    extended(12) <= jumpAD(11);
+    extended(13) <= jumpAD(11);
+    extended(14) <= jumpAD(11);
+    extended(15) <= jumpAD(11);
+
+    -- Shift left 1 (*2)
+    doubled(0)  <= '0';
+    doubled(1)  <= extended(0);
+    doubled(2)  <= extended(1);
+    doubled(3)  <= extended(2);
+    doubled(4)  <= extended(3);
+    doubled(5)  <= extended(4);
+    doubled(6)  <= extended(5);
+    doubled(7)  <= extended(6);
+    doubled(8)  <= extended(7);
+    doubled(9)  <= extended(8);
+    doubled(10) <= extended(9);
+    doubled(11) <= extended(10);
+    doubled(12) <= extended(11);
+    doubled(13) <= extended(12);
+    doubled(14) <= extended(13);
+    doubled(15) <= extended(14);
+
+	 FA: sixteen_bit_full_adder PORT MAP(doubled, instrP2AD, '0', EjumpAD, Cout);	
 end structural;
