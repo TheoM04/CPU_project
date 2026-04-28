@@ -39,7 +39,7 @@
 
 set_global_assignment -name FAMILY "Cyclone V"
 set_global_assignment -name DEVICE 5CGXFC7C7F23C8
-set_global_assignment -name TOP_LEVEL_ENTITY jump_address
+set_global_assignment -name TOP_LEVEL_ENTITY JRSelector
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 19.1.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "14:32:26  APRIL 03, 2026"
 set_global_assignment -name LAST_QUARTUS_VERSION "19.1.0 Lite Edition"
@@ -97,6 +97,14 @@ set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform12.vwf
 set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform13.vwf
 set_global_assignment -name VHDL_FILE decoder3to8_16bit.vhd
 set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform14.vwf
+set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform15.vwf
+set_global_assignment -name VHDL_FILE alu_control.vhd
+set_global_assignment -name VHDL_FILE IF_ID.vhd
+set_global_assignment -name VHDL_FILE EX_MEM.vhd
+set_global_assignment -name VHDL_FILE MEM_WB.vhd
+set_global_assignment -name VHDL_FILE forwarding_unit.vhd
+set_global_assignment -name VHDL_FILE hazard_unit.vhd
+set_global_assignment -name VHDL_FILE JRSelector.vhd
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
