@@ -26,7 +26,11 @@ ARCHITECTURE structural OF register_file IS
     END COMPONENT;
 
     COMPONENT register_zero IS
-        PORT(q : out std_logic_vector(15 downto 0));
+        PORT (
+        d           : IN  STD_LOGIC_VECTOR(15 downto 0);
+        clk, en, rst : IN  STD_LOGIC;
+        q           : OUT STD_LOGIC_VECTOR(15 downto 0)
+    );
     END COMPONENT;
 
     COMPONENT decoder3to8 IS
@@ -49,7 +53,7 @@ BEGIN
 
     DEC: decoder3to8 PORT MAP(write1AD, load_reg);
 
-    REG0: register_zero PORT MAP(q => r0);
+    REG0: register_zero PORT MAP(write1, clk, load_reg(0), '1', r0);
 
     REG1: register_16bit PORT MAP(write1, clk, load_reg(1), '1', r1);
     REG2: register_16bit PORT MAP(write1, clk, load_reg(2), '1', r2);

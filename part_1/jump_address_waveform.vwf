@@ -1,12 +1,12 @@
 /*<simulation_settings>
-<ftestbench_cmd>quartus_eda --gen_testbench --tool=modelsim_oem --format=vhdl --write_settings_files=off cpu_part_1 -c cpu_part_1 --vector_source="C:/intelFPGA_lite/19.1/projects/CPU_project/part_1/Waveform15.vwf" --testbench_file="C:/intelFPGA_lite/19.1/projects/CPU_project/part_1/simulation/qsim/Waveform15.vwf.vht"</ftestbench_cmd>
-<ttestbench_cmd>quartus_eda --gen_testbench --tool=modelsim_oem --format=vhdl --write_settings_files=off cpu_part_1 -c cpu_part_1 --vector_source="C:/intelFPGA_lite/19.1/projects/CPU_project/part_1/Waveform15.vwf" --testbench_file="C:/intelFPGA_lite/19.1/projects/CPU_project/part_1/simulation/qsim/Waveform15.vwf.vht"</ttestbench_cmd>
+<ftestbench_cmd>quartus_eda --gen_testbench --tool=modelsim_oem --format=vhdl --write_settings_files=off cpu_part_1 -c cpu_part_1 --vector_source="C:/intelFPGA_lite/19.1/projects/CPU_project/part_1/jump_address_waveform.vwf" --testbench_file="C:/intelFPGA_lite/19.1/projects/CPU_project/part_1/simulation/qsim/jump_address_waveform.vwf.vht"</ftestbench_cmd>
+<ttestbench_cmd>quartus_eda --gen_testbench --tool=modelsim_oem --format=vhdl --write_settings_files=off cpu_part_1 -c cpu_part_1 --vector_source="C:/intelFPGA_lite/19.1/projects/CPU_project/part_1/jump_address_waveform.vwf" --testbench_file="C:/intelFPGA_lite/19.1/projects/CPU_project/part_1/simulation/qsim/jump_address_waveform.vwf.vht"</ttestbench_cmd>
 <fnetlist_cmd>quartus_eda --write_settings_files=off --simulation --functional=on --flatten_buses=off --tool=modelsim_oem --format=vhdl --output_directory="C:/intelFPGA_lite/19.1/projects/CPU_project/part_1/simulation/qsim/" cpu_part_1 -c cpu_part_1</fnetlist_cmd>
 <tnetlist_cmd>quartus_eda --write_settings_files=off --simulation --functional=off --flatten_buses=off --timescale=1ps --tool=modelsim_oem --format=vhdl --output_directory="C:/intelFPGA_lite/19.1/projects/CPU_project/part_1/simulation/qsim/" cpu_part_1 -c cpu_part_1</tnetlist_cmd>
 <modelsim_script>onerror {exit -code 1}
 vlib work
 vcom -work work cpu_part_1.vho
-vcom -work work Waveform15.vwf.vht
+vcom -work work jump_address_waveform.vwf.vht
 vsim -novopt -c -t 1ps -L cyclonev -L altera -L altera_mf -L 220model -L sgate -L altera_lnsim work.jump_address_vhd_vec_tst
 vcd file -direction cpu_part_1.msim.vcd
 vcd add -internal jump_address_vhd_vec_tst/*
@@ -24,7 +24,7 @@ quit -f
 <modelsim_script_timing>onerror {exit -code 1}
 vlib work
 vcom -work work cpu_part_1.vho
-vcom -work work Waveform15.vwf.vht
+vcom -work work jump_address_waveform.vwf.vht
 vsim -novopt -c -t 1ps -sdfmax jump_address_vhd_vec_tst/i1=cpu_part_1_vhd.sdo -L cyclonev -L altera -L altera_mf -L 220model -L sgate -L altera_lnsim work.jump_address_vhd_vec_tst
 vcd file -direction cpu_part_1.msim.vcd
 vcd add -internal jump_address_vhd_vec_tst/*
@@ -979,7 +979,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "EjumpAD";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 0;
 	TREE_LEVEL = 0;
 	CHILDREN = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16;
@@ -989,7 +989,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "EjumpAD[15]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 1;
 	TREE_LEVEL = 1;
 	PARENT = 0;
@@ -999,7 +999,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "EjumpAD[14]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 2;
 	TREE_LEVEL = 1;
 	PARENT = 0;
@@ -1009,7 +1009,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "EjumpAD[13]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 3;
 	TREE_LEVEL = 1;
 	PARENT = 0;
@@ -1019,7 +1019,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "EjumpAD[12]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 4;
 	TREE_LEVEL = 1;
 	PARENT = 0;
@@ -1029,7 +1029,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "EjumpAD[11]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 5;
 	TREE_LEVEL = 1;
 	PARENT = 0;
@@ -1039,7 +1039,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "EjumpAD[10]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 6;
 	TREE_LEVEL = 1;
 	PARENT = 0;
@@ -1049,7 +1049,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "EjumpAD[9]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 7;
 	TREE_LEVEL = 1;
 	PARENT = 0;
@@ -1059,7 +1059,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "EjumpAD[8]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 8;
 	TREE_LEVEL = 1;
 	PARENT = 0;
@@ -1069,7 +1069,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "EjumpAD[7]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 9;
 	TREE_LEVEL = 1;
 	PARENT = 0;
@@ -1079,7 +1079,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "EjumpAD[6]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 10;
 	TREE_LEVEL = 1;
 	PARENT = 0;
@@ -1089,7 +1089,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "EjumpAD[5]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 11;
 	TREE_LEVEL = 1;
 	PARENT = 0;
@@ -1099,7 +1099,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "EjumpAD[4]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 12;
 	TREE_LEVEL = 1;
 	PARENT = 0;
@@ -1109,7 +1109,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "EjumpAD[3]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 13;
 	TREE_LEVEL = 1;
 	PARENT = 0;
@@ -1119,7 +1119,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "EjumpAD[2]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 14;
 	TREE_LEVEL = 1;
 	PARENT = 0;
@@ -1129,7 +1129,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "EjumpAD[1]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 15;
 	TREE_LEVEL = 1;
 	PARENT = 0;
@@ -1139,7 +1139,7 @@ DISPLAY_LINE
 {
 	CHANNEL = "EjumpAD[0]";
 	EXPAND_STATUS = COLLAPSED;
-	RADIX = Binary;
+	RADIX = Hexadecimal;
 	TREE_INDEX = 16;
 	TREE_LEVEL = 1;
 	PARENT = 0;

@@ -1,14 +1,15 @@
-library ieee;
-use ieee.std_logic_1164.all;
+library IEEE;
+use IEEE.STD_LOGIC_1164.all;
 
-entity register_zero is
-	port(
-		q : out std_logic_vector (15 downto 0)
-		);
-end register_zero;
+ENTITY register_zero IS
+    PORT (
+        d           : IN  STD_LOGIC_VECTOR(15 downto 0);
+        clk, en, rst : IN  STD_LOGIC;
+        q           : OUT STD_LOGIC_VECTOR(15 downto 0)
+    );
+END register_zero;
 
-architecture stractural of register_zero is
-begin
-	q <= (others => '0');
-end stractural;
-	
+ARCHITECTURE structural OF register_zero IS
+BEGIN
+    q <= "0000000000000000";
+END structural;
