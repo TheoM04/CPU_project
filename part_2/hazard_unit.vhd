@@ -22,7 +22,7 @@ begin
             -- Jump Register
             flush_IFID <= '1';
             flush_IDEX <= '1';
-            JRopcode   <= "11"; -- sto register value
+            JRopcode   <= "01"; -- sto register value
         elsif isJump = '1' then
             -- kanoniko Jump
             flush_IFID <= '1';
