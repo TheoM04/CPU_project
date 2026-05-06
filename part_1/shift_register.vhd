@@ -5,9 +5,7 @@ entity shift_register is
     port(
         a : in  std_logic;
         clk    : in  std_logic;
-        en     : in  std_logic;
-        rst    : in  std_logic;
-        q : out std_logic
+        q : out std_logic_vector(3 downto 0)
     );
 end shift_register;
 
@@ -21,12 +19,13 @@ architecture structural of shift_register is
             q   : out std_logic
         );
     end component;
-
-    signal ff1_out, ff2_out, ff3_out : std_logic;
+	 
+	 signal s: std_logic_vector(3 downto 0);
 
 begin
-    FF1: ff_rising_1bit port map(d => a,   clk => clk, en => en, rst => rst, q => ff1_out);
-    FF2: ff_rising_1bit port map(d => ff1_out, clk => clk, en => en, rst => rst, q => ff2_out);
-    FF3: ff_rising_1bit port map(d => ff2_out, clk => clk, en => en, rst => rst, q => ff3_out);
-    FF4: ff_rising_1bit port map(d => ff3_out, clk => clk, en => en, rst => rst, q => q);
+    FF1: ff_rising_1bit port map(d => a,   clk => clk, en => '1', rst => '1', q => s(3));
+    FF2: ff_rising_1bit port map(d => s(3), clk => clk, en => '1', rst => '1', q => s(2));
+    FF3: ff_rising_1bit port map(d => s(2), clk => clk, en => '1', rst => '1', q => s(1));
+    FF4: ff_rising_1bit port map(d => s(1), clk => clk, en => '1', rst => '1', q => s(0));
+	 q <= s;
 end structural;
