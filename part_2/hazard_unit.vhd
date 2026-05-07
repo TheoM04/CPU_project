@@ -28,7 +28,7 @@ begin
             flush_IFID <= '1';
             flush_IDEX <= '1';
             JRopcode   <= "01"; -- JumpAD
-        elsif isBranch = '1' and aluResult(0) = '1' then
+        elsif isBranch = '1' and aluResult(15) = '1' then
             -- Branch taken (result ALU = 1)
             flush_IFID <= '1';
             flush_IDEX <= '1';
