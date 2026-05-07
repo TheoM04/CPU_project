@@ -33,7 +33,7 @@ entity ID_EX is
         IsR_IDEX           : out STD_LOGIC;
         IsReadDigit_IDEX   : out STD_LOGIC;
         IsSW_IDEX          : out STD_LOGIC;
-        ALUFunc_IDEX       : out STD_LOG_VECTOR(3 downto 0);
+        ALUFunc_IDEX       : out STD_LOGIC_VECTOR(3 downto 0);
         R1Reg_IDEX         : out STD_LOGIC_VECTOR(15 downto 0);
         R2Reg_IDEX         : out STD_LOGIC_VECTOR(15 downto 0);
         Immediate16_IDEX   : out STD_LOGIC_VECTOR(15 downto 0);
