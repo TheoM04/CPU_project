@@ -39,7 +39,7 @@
 
 set_global_assignment -name FAMILY "Cyclone V"
 set_global_assignment -name DEVICE 5CGXFC7C7F23C8
-set_global_assignment -name TOP_LEVEL_ENTITY PC_Register
+set_global_assignment -name TOP_LEVEL_ENTITY Processor
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 19.1.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "14:19:15  APRIL 29, 2026"
 set_global_assignment -name LAST_QUARTUS_VERSION "19.1.0 Lite Edition"
@@ -56,6 +56,35 @@ set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_
 set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_boundary_scan
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name VHDL_FILE ../part_1/xor_gate.vhd
+set_global_assignment -name VHDL_FILE ../part_1/sixteen_bit_full_adder.vhd
+set_global_assignment -name VHDL_FILE ../part_1/shift_register.vhd
+set_global_assignment -name VHDL_FILE ../part_1/register_zero.vhd
+set_global_assignment -name VHDL_FILE ../part_1/register_16bit.vhd
+set_global_assignment -name VHDL_FILE ../part_1/or_gate.vhd
+set_global_assignment -name VHDL_FILE ../part_1/one_bit_half_adder.vhd
+set_global_assignment -name VHDL_FILE ../part_1/one_bit_full_adder.vhd
+set_global_assignment -name VHDL_FILE ../part_1/not_gate.vhd
+set_global_assignment -name VHDL_FILE ../part_1/nor_gate.vhd
+set_global_assignment -name VHDL_FILE ../part_1/mux8to1_16bit.vhd
+set_global_assignment -name VHDL_FILE ../part_1/mux8to1.vhd
+set_global_assignment -name VHDL_FILE ../part_1/mux2to1.vhd
+set_global_assignment -name VHDL_FILE ../part_1/jump_address.vhd
+set_global_assignment -name VHDL_FILE ../part_1/ff_rising_1bit.vhd
+set_global_assignment -name VHDL_FILE ../part_1/ff_rising.vhd
+set_global_assignment -name VHDL_FILE ../part_1/ff_falling.vhd
+set_global_assignment -name VHDL_FILE ../part_1/ff_combined.vhd
+set_global_assignment -name VHDL_FILE ../part_1/decoder3to8_16bit.vhd
+set_global_assignment -name VHDL_FILE ../part_1/decoder3to8.vhd
+set_global_assignment -name VHDL_FILE ../part_1/and3_gate.vhd
+set_global_assignment -name VHDL_FILE ../part_1/and_gate.vhd
+set_global_assignment -name VHDL_FILE ../part_1/alu_1bit.vhd
+set_global_assignment -name VHDL_FILE ../part_1/sign_extender.vhd
+set_global_assignment -name VHDL_FILE ../part_1/register_file.vhd
+set_global_assignment -name VHDL_FILE ../part_1/alu_16bit.vhd
 set_global_assignment -name VHDL_FILE MEM_WB.vhd
 set_global_assignment -name VHDL_FILE JRSelector.vhd
 set_global_assignment -name VHDL_FILE IF_ID.vhd
@@ -73,9 +102,9 @@ set_global_assignment -name VECTOR_WAVEFORM_FILE JRSelector_wvfrm.vwf
 set_global_assignment -name VECTOR_WAVEFORM_FILE hazard_unit_wvfrm.vwf
 set_global_assignment -name VECTOR_WAVEFORM_FILE forwarding_unit_wvfrm.vwf
 set_global_assignment -name VHDL_FILE PC_Register.vhd
-set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
-set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
-set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_global_assignment -name VHDL_FILE Selector.vhd
 set_global_assignment -name VHDL_FILE TrapUnit.vhd
+set_global_assignment -name VHDL_FILE Processor.vhd
+set_global_assignment -name VECTOR_WAVEFORM_FILE Processor_wvf.vwf
+set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform.vwf
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

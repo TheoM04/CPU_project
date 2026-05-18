@@ -16,29 +16,33 @@ entity ID_EX is
         IsReadDigit        : in  STD_LOGIC;
         IsSW               : in  STD_LOGIC;
         WasJumpOut         : in  STD_LOGIC;
-        ALUFunc            : in  STD_LOGIC_VECTOR(3 downto 0);
+        ALUFunc            : in  STD_LOGIC_VECTOR(6 downto 0);  -- opcode(3:0) & func(2:0)
         
         R1Reg              : in  STD_LOGIC_VECTOR(15 downto 0);
         R2Reg              : in  STD_LOGIC_VECTOR(15 downto 0);
         Immediate16        : in  STD_LOGIC_VECTOR(15 downto 0);
-        R1AD               : in  STD_LOGIC_VECTOR(2 downto 0);
-        R2AD               : in  STD_LOGIC_VECTOR(2 downto 0);
+        R1AD               : in  STD_LOGIC_VECTOR(2 downto 0);  -- RS address
+        R2AD               : in  STD_LOGIC_VECTOR(2 downto 0);  -- RT address
+        RdAD               : in  STD_LOGIC_VECTOR(2 downto 0);  -- RD address (destination)
         JumpShortAddr      : in  STD_LOGIC_VECTOR(11 downto 0);
 
         IsBranch_IDEX      : out STD_LOGIC;
         IsEOR_IDEX         : out STD_LOGIC;
+        IsJR_IDEX          : out STD_LOGIC;
+        IsJump_IDEX        : out STD_LOGIC;
         IsLW_IDEX          : out STD_LOGIC;
         IsMFPC_IDEX        : out STD_LOGIC;
         IsPrintDigit_IDEX  : out STD_LOGIC;
         IsR_IDEX           : out STD_LOGIC;
         IsReadDigit_IDEX   : out STD_LOGIC;
         IsSW_IDEX          : out STD_LOGIC;
-        ALUFunc_IDEX       : out STD_LOGIC_VECTOR(3 downto 0);
+        ALUFunc_IDEX       : out STD_LOGIC_VECTOR(6 downto 0);
         R1Reg_IDEX         : out STD_LOGIC_VECTOR(15 downto 0);
         R2Reg_IDEX         : out STD_LOGIC_VECTOR(15 downto 0);
         Immediate16_IDEX   : out STD_LOGIC_VECTOR(15 downto 0);
-        R1AD_IDEX          : out STD_LOGIC_VECTOR(2 downto 0);
-        R2AD_IDEX          : out STD_LOGIC_VECTOR(2 downto 0);
+        R1AD_IDEX          : out STD_LOGIC_VECTOR(2 downto 0);  -- RS address
+        R2AD_IDEX          : out STD_LOGIC_VECTOR(2 downto 0);  -- RT address
+        RdAD_IDEX          : out STD_LOGIC_VECTOR(2 downto 0);  -- RD address (destination)
         JumpShortAddr_IDEX : out STD_LOGIC_VECTOR(11 downto 0)
     );
 end ID_EX;
@@ -51,6 +55,8 @@ begin
             if WasJumpOut = '1' then
                 IsBranch_IDEX     <= '0';
                 IsEOR_IDEX        <= '0';
+                IsJR_IDEX         <= '0';
+                IsJump_IDEX       <= '0';
                 IsLW_IDEX         <= '0';
                 IsMFPC_IDEX       <= '0';
                 IsPrintDigit_IDEX <= '0';
@@ -60,6 +66,8 @@ begin
             else
                 IsBranch_IDEX     <= isBranch;
                 IsEOR_IDEX        <= isEOR;
+                IsJR_IDEX         <= IsJR;
+                IsJump_IDEX       <= IsJump;
                 IsLW_IDEX         <= IsLW;
                 IsMFPC_IDEX       <= IsMFPC;
                 IsPrintDigit_IDEX <= IsPrintDigit;
@@ -72,6 +80,7 @@ begin
                 Immediate16_IDEX  <= Immediate16;
                 R1AD_IDEX         <= R1AD;
                 R2AD_IDEX         <= R2AD;
+                RdAD_IDEX         <= RdAD;
                 JumpShortAddr_IDEX <= JumpShortAddr;
             end if;
         end if;

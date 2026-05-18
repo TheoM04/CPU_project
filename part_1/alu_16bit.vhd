@@ -35,20 +35,21 @@ BEGIN
 
 	OP_DEC: decoder3to8 PORT MAP(OP, Y);
 	
-	carries(0) <= Y(1); --if we choose op code 001 meaning subtraction then the ddecoder will have 1 in this potition and we pass it as the first cin in order to simulate the subtraction (a-b = a + notb + 1)
+	carries(0) <= Y(1);
 	
 	GEQ_INV: not_gate PORT MAP(A(15), geq_res);
 	
-	--The first 1bit alu slice should have the answer for the geq operation because it depends only on the msb, so the rest slices will just have the gnd signal for this operation
-	ALU_0: alu_1bit PORT MAP(A(0), B(0), carries(0), Y(1), geq_res, OP, Result(0), carries(1));
+	-- Bits 0-14: geq_bit = GND (δεν συμμετέχουν στο GEQ)
+	ALU_0: alu_1bit PORT MAP(A(0), B(0), carries(0), Y(1), GND, OP, Result(0), carries(1));
 	
-	--The rest 15 1bit alu slices
-	ALU_ARRAY: FOR i IN 1 TO 15 GENERATE
-	
-		ALU_SLICE:alu_1bit PORT MAP(A(i), B(i), carries(i), Y(1), GND, OP, Result(i), carries(i+1));
-		
+	ALU_ARRAY: FOR i IN 1 TO 14 GENERATE
+		ALU_SLICE: alu_1bit PORT MAP(A(i), B(i), carries(i), Y(1), GND, OP, Result(i), carries(i+1));
 	END GENERATE;
 	
+	-- Bit 15 (MSB): geq_bit = geq_res = NOT(A(15))
+	-- Έτσι GEQ βγάζει 1000000000000000 αν A >= 0
+	ALU_15: alu_1bit PORT MAP(A(15), B(15), carries(15), Y(1), geq_res, OP, Result(15), carries(16));
+
 	overflow <= carries(16);
 	
 END stractural;
