@@ -83,14 +83,15 @@ architecture structural of Processor is
 
     component register_file is
         Port (
-            clk      : in  STD_LOGIC;
-            write1AD : in  STD_LOGIC_VECTOR(2 downto 0);
-            write1   : in  STD_LOGIC_VECTOR(15 downto 0);
-            readAD1  : in  STD_LOGIC_VECTOR(2 downto 0);
-            readAD2  : in  STD_LOGIC_VECTOR(2 downto 0);
-            Read1    : out STD_LOGIC_VECTOR(15 downto 0);
-            Read2    : out STD_LOGIC_VECTOR(15 downto 0);
-            OUTall   : out STD_LOGIC_VECTOR(127 downto 0)
+            clk         : in  STD_LOGIC;
+            writeEnable : in  STD_LOGIC;
+            write1AD    : in  STD_LOGIC_VECTOR(2 downto 0);
+            write1      : in  STD_LOGIC_VECTOR(15 downto 0);
+            readAD1     : in  STD_LOGIC_VECTOR(2 downto 0);
+            readAD2     : in  STD_LOGIC_VECTOR(2 downto 0);
+            Read1       : out STD_LOGIC_VECTOR(15 downto 0);
+            Read2       : out STD_LOGIC_VECTOR(15 downto 0);
+            OUTall      : out STD_LOGIC_VECTOR(127 downto 0)
         );
     end component;
 
@@ -133,6 +134,8 @@ architecture structural of Processor is
             JumpShortAddr      : in  STD_LOGIC_VECTOR(11 downto 0);
             IsBranch_IDEX      : out STD_LOGIC;
             IsEOR_IDEX         : out STD_LOGIC;
+            IsJR_IDEX          : out STD_LOGIC;
+            IsJump_IDEX        : out STD_LOGIC;
             IsLW_IDEX          : out STD_LOGIC;
             IsMFPC_IDEX        : out STD_LOGIC;
             IsPrintDigit_IDEX  : out STD_LOGIC;
@@ -211,6 +214,7 @@ architecture structural of Processor is
             isRead          : in  STD_LOGIC;
             writeEnable     : in  STD_LOGIC;
             isLW            : in  STD_LOGIC;
+            isSW            : in  STD_LOGIC;
             Result          : in  STD_LOGIC_VECTOR(15 downto 0);
             regAD           : in  STD_LOGIC_VECTOR(2 downto 0);
             R2Reg           : in  STD_LOGIC_VECTOR(15 downto 0);
@@ -218,6 +222,7 @@ architecture structural of Processor is
             out_isRead      : out STD_LOGIC;
             out_writeEnable : out STD_LOGIC;
             out_isLW        : out STD_LOGIC;
+            out_isSW        : out STD_LOGIC;
             out_Result      : out STD_LOGIC_VECTOR(15 downto 0);
             out_regAD       : out STD_LOGIC_VECTOR(2 downto 0);
             out_R2Reg       : out STD_LOGIC_VECTOR(15 downto 0)
@@ -303,6 +308,8 @@ architecture structural of Processor is
     -- ID/EX outputs
     signal idex_isBranch : STD_LOGIC;
     signal idex_isEOR    : STD_LOGIC;
+    signal idex_isJR     : STD_LOGIC;
+    signal idex_isJump   : STD_LOGIC;
     signal idex_isLW     : STD_LOGIC;
     signal idex_isMFPC   : STD_LOGIC;
     signal idex_isPrint  : STD_LOGIC;
@@ -318,6 +325,7 @@ architecture structural of Processor is
     signal idex_r2ad     : STD_LOGIC_VECTOR(2 downto 0);
     signal idex_rdad     : STD_LOGIC_VECTOR(2 downto 0);  -- destination register
     signal idex_jumpaddr : STD_LOGIC_VECTOR(11 downto 0);
+    signal idex_pc       : STD_LOGIC_VECTOR(15 downto 0);  -- PC gia MFPC
 
     -- EX Stage
     signal fwd_a          : STD_LOGIC_VECTOR(1 downto 0);
@@ -436,14 +444,15 @@ begin
     -- Γράφει από το WB stage
     RF: register_file
         port map (
-            clk      => clk,
-            write1AD => memwb_writeAD,
-            write1   => memwb_writeData,
-            readAD1  => id_rs,
-            readAD2  => id_rt,
-            Read1    => rf_read1,
-            Read2    => rf_read2,
-            OUTall   => rf_outall
+            clk         => clk,
+            writeEnable => memwb_we,
+            write1AD    => memwb_writeAD,
+            write1      => memwb_writeData,
+            readAD1     => id_rs,
+            readAD2     => id_rt,
+            Read1       => rf_read1,
+            Read2       => rf_read2,
+            OUTall      => rf_outall
         );
 
     -- WB forwarding: αν ο register που γράφεται (WB) είναι ο ίδιος
@@ -481,11 +490,13 @@ begin
             R2Reg              => id_r2reg_fwd,
             Immediate16        => id_imm16,
             R1AD               => id_rs,
-            R2AD               => id_rt,       -- RT για forwarding
-            RdAD               => id_destAD,   -- RD για write back
+            R2AD               => id_rt,
+            RdAD               => id_destAD,
             JumpShortAddr      => id_jumpaddr,
             IsBranch_IDEX      => idex_isBranch,
             IsEOR_IDEX         => idex_isEOR,
+            IsJR_IDEX          => idex_isJR,
+            IsJump_IDEX        => idex_isJump,
             IsLW_IDEX          => idex_isLW,
             IsMFPC_IDEX        => idex_isMFPC,
             IsPrintDigit_IDEX  => idex_isPrint,
@@ -537,8 +548,12 @@ begin
             final_out   => alu_in_b
         );
 
-    -- MFPC: ALU_A = PC
-    alu_a_final <= ifid_pc when (idex_isMFPC = '1') else alu_in_a;
+    -- To PC pernaei kai apo to ID_EX register gia MFPC
+    -- ifid_pc = PC+2 ths entolis pou twra einai sto EX stage (exei hdh perasei to ID_EX)
+    idex_pc <= ifid_pc;
+
+    -- MFPC: ALU_A = PC+2 ths trexousas entolis
+    alu_a_final <= idex_pc when (idex_isMFPC = '1') else alu_in_a;
 
     -- LW/SW: ALU_B = immediate (address = RS + offset)
     alu_b_final <= idex_imm16 when (idex_isLW = '1' or idex_isSW = '1')
@@ -560,13 +575,13 @@ begin
             overflow => alu_overflow
         );
 
-    branch_ad <= ifid_pc + idex_imm16;
+    branch_ad <= idex_pc + idex_imm16;  -- branch = PC_EX + offset
     jump_ad   <= "0000" & idex_jumpaddr;
 
     HAZ: hazard_unit
         port map (
-            isJump     => ctrl_isJump,
-            isJR       => ctrl_isJR,
+            isJump     => idex_isJump,
+            isJR       => idex_isJR,
             isBranch   => idex_isBranch,
             aluResult  => alu_result,
             flush_IFID => haz_flush_ifid,
@@ -588,15 +603,17 @@ begin
             clk             => clk,
             isPrint         => idex_isPrint,
             isRead          => idex_isRead,
-            writeEnable     => idex_regwrite,  -- από ID_EX pipeline register
+            writeEnable     => idex_regwrite,
             isLW            => idex_isLW,
+            isSW            => idex_isSW,
             Result          => alu_result,
-            regAD           => idex_rdad,   -- destination register (RD)
+            regAD           => idex_rdad,
             R2Reg           => alu_in_b,
             out_isPrint     => exmem_isPrint,
             out_isRead      => exmem_isRead,
             out_writeEnable => exmem_we,
             out_isLW        => exmem_isLW,
+            out_isSW        => exmem_isSW,
             out_Result      => exmem_result,
             out_regAD       => exmem_regAD,
             out_R2Reg       => exmem_r2reg
@@ -615,7 +632,8 @@ begin
     keyEnable <= exmem_isRead;
 
     -- SW: γράψε στη data memory
-    dataWriteFlag <= exmem_we when exmem_isLW = '0' else '0';
+    -- SW: grapse sti data memory mono otan einai SW (oxi LW)
+    dataWriteFlag <= exmem_isSW;
     dataAd        <= exmem_result;   -- διεύθυνση = αποτέλεσμα ALU
     toData        <= exmem_r2reg;    -- δεδομένα = RT register
 

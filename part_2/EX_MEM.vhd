@@ -8,6 +8,7 @@ entity EX_MEM is
         isRead      		: in  STD_LOGIC;
         writeEnable 		: in  STD_LOGIC;
         isLW        		: in  STD_LOGIC;
+        isSW                : in  STD_LOGIC;
         Result      		: in  STD_LOGIC_VECTOR(15 downto 0);
         regAD       		: in  STD_LOGIC_VECTOR(2 downto 0);
         R2Reg       		: in  STD_LOGIC_VECTOR(15 downto 0);
@@ -16,6 +17,7 @@ entity EX_MEM is
         out_isRead      : out STD_LOGIC;
         out_writeEnable : out STD_LOGIC;
         out_isLW        : out STD_LOGIC;
+        out_isSW        : out STD_LOGIC;
         out_Result      : out STD_LOGIC_VECTOR(15 downto 0);
         out_regAD       : out STD_LOGIC_VECTOR(2 downto 0);
         out_R2Reg       : out STD_LOGIC_VECTOR(15 downto 0)
@@ -31,6 +33,7 @@ begin
             out_isRead      <= isRead;
             out_writeEnable <= writeEnable;
             out_isLW        <= isLW;
+            out_isSW        <= isSW;
             out_Result      <= Result;
             out_regAD       <= regAD;
             out_R2Reg       <= R2Reg;

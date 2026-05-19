@@ -4,6 +4,7 @@ use IEEE.STD_LOGIC_1164.all;
 ENTITY register_file IS
     PORT (
         clk         : IN  STD_LOGIC;
+        writeEnable : IN  STD_LOGIC;
         write1AD    : IN  STD_LOGIC_VECTOR(2 downto 0);
         write1      : IN  STD_LOGIC_VECTOR(15 downto 0);
         readAD1     : IN  STD_LOGIC_VECTOR(2 downto 0);
@@ -46,22 +47,26 @@ ARCHITECTURE structural OF register_file IS
         );
     END COMPONENT;
 
-    SIGNAL load_reg : STD_LOGIC_VECTOR(7 downto 0);
+    SIGNAL load_reg     : STD_LOGIC_VECTOR(7 downto 0);
+    SIGNAL gated_load   : STD_LOGIC_VECTOR(7 downto 0);
     SIGNAL r0, r1, r2, r3, r4, r5, r6, r7 : STD_LOGIC_VECTOR(15 downto 0);
 
 BEGIN
 
     DEC: decoder3to8 PORT MAP(write1AD, load_reg);
 
-    REG0: register_zero PORT MAP(write1, clk, load_reg(0), '1', r0);
+    -- Gate: mono otan writeEnable=1 epitrepoume tin eggrafh
+    gated_load <= load_reg when writeEnable = '1' else (others => '0');
 
-    REG1: register_16bit PORT MAP(write1, clk, load_reg(1), '1', r1);
-    REG2: register_16bit PORT MAP(write1, clk, load_reg(2), '1', r2);
-    REG3: register_16bit PORT MAP(write1, clk, load_reg(3), '1', r3);
-    REG4: register_16bit PORT MAP(write1, clk, load_reg(4), '1', r4);
-    REG5: register_16bit PORT MAP(write1, clk, load_reg(5), '1', r5);
-    REG6: register_16bit PORT MAP(write1, clk, load_reg(6), '1', r6);
-    REG7: register_16bit PORT MAP(write1, clk, load_reg(7), '1', r7);
+    REG0: register_zero PORT MAP(write1, clk, gated_load(0), '1', r0);
+
+    REG1: register_16bit PORT MAP(write1, clk, gated_load(1), '1', r1);
+    REG2: register_16bit PORT MAP(write1, clk, gated_load(2), '1', r2);
+    REG3: register_16bit PORT MAP(write1, clk, gated_load(3), '1', r3);
+    REG4: register_16bit PORT MAP(write1, clk, gated_load(4), '1', r4);
+    REG5: register_16bit PORT MAP(write1, clk, gated_load(5), '1', r5);
+    REG6: register_16bit PORT MAP(write1, clk, gated_load(6), '1', r6);
+    REG7: register_16bit PORT MAP(write1, clk, gated_load(7), '1', r7);
 
     MUX_A: mux8to1_16bit PORT MAP(r0, r1, r2, r3, r4, r5, r6, r7, readAD1, Read1);
     MUX_B: mux8to1_16bit PORT MAP(r0, r1, r2, r3, r4, r5, r6, r7, readAD2, Read2);
