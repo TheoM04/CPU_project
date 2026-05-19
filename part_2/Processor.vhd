@@ -31,7 +31,8 @@ entity Processor is
         debug_memwb_ad   : out STD_LOGIC_VECTOR(2 downto 0);
         debug_ctrl_regwr : out STD_LOGIC;
         debug_exmem_we   : out STD_LOGIC;
-        debug_idex_r2ad  : out STD_LOGIC_VECTOR(2 downto 0)
+        debug_idex_r2ad  : out STD_LOGIC_VECTOR(2 downto 0);
+        debug_memwb_we   : out STD_LOGIC
     );
 end Processor;
 
@@ -120,6 +121,7 @@ architecture structural of Processor is
             IsR                : in  STD_LOGIC;
             IsReadDigit        : in  STD_LOGIC;
             IsSW               : in  STD_LOGIC;
+            RegWrite           : in  STD_LOGIC;
             WasJumpOut         : in  STD_LOGIC;
             ALUFunc            : in  STD_LOGIC_VECTOR(6 downto 0);
             R1Reg              : in  STD_LOGIC_VECTOR(15 downto 0);
@@ -137,6 +139,7 @@ architecture structural of Processor is
             IsR_IDEX           : out STD_LOGIC;
             IsReadDigit_IDEX   : out STD_LOGIC;
             IsSW_IDEX          : out STD_LOGIC;
+            RegWrite_IDEX      : out STD_LOGIC;
             ALUFunc_IDEX       : out STD_LOGIC_VECTOR(6 downto 0);
             R1Reg_IDEX         : out STD_LOGIC_VECTOR(15 downto 0);
             R2Reg_IDEX         : out STD_LOGIC_VECTOR(15 downto 0);
@@ -294,6 +297,8 @@ architecture structural of Processor is
     signal rf_read1  : STD_LOGIC_VECTOR(15 downto 0);
     signal rf_read2  : STD_LOGIC_VECTOR(15 downto 0);
     signal rf_outall : STD_LOGIC_VECTOR(127 downto 0);
+    signal id_r1reg_fwd : STD_LOGIC_VECTOR(15 downto 0);
+    signal id_r2reg_fwd : STD_LOGIC_VECTOR(15 downto 0);
 
     -- ID/EX outputs
     signal idex_isBranch : STD_LOGIC;
@@ -304,6 +309,7 @@ architecture structural of Processor is
     signal idex_isR      : STD_LOGIC;
     signal idex_isRead   : STD_LOGIC;
     signal idex_isSW     : STD_LOGIC;
+    signal idex_regwrite : STD_LOGIC;
     signal idex_alufunc  : STD_LOGIC_VECTOR(6 downto 0);
     signal idex_r1reg    : STD_LOGIC_VECTOR(15 downto 0);
     signal idex_r2reg    : STD_LOGIC_VECTOR(15 downto 0);
@@ -388,14 +394,13 @@ begin
     -- J-type: op(15:12) | jumpAddr(11:0)
 
     id_opcode   <= ifid_instr(15 downto 12);
-    id_rd       <= ifid_instr(11 downto 9);
-    id_rs       <= ifid_instr(8  downto 6);
-    id_rt       <= ifid_instr(5  downto 3);
+    id_rs       <= ifid_instr(11 downto 9);  -- rs
+    id_rt       <= ifid_instr(8  downto 6);  -- rt
+    id_rd       <= ifid_instr(5  downto 3);  -- rd (destination)
     id_func     <= ifid_instr(2  downto 0);
     id_imm6     <= ifid_instr(5  downto 0);
     id_jumpaddr <= ifid_instr(11 downto 0);
-    -- ALUFunc: opcode(3:0) & func(2:0) = 7 bits
-    id_alufunc  <= id_opcode & id_func;  -- 7 bits total
+    id_alufunc  <= id_opcode & id_func;
     id_destAD   <= id_rd;
 
     SE: sign_extender
@@ -441,6 +446,19 @@ begin
             OUTall   => rf_outall
         );
 
+    -- WB forwarding: αν ο register που γράφεται (WB) είναι ο ίδιος
+    -- με αυτόν που διαβάζεται (ID), χρησιμοποιούμε το WB data
+    -- αντί το register file output
+    id_r1reg_fwd <= memwb_writeData when (memwb_we = '1' and 
+                                          memwb_writeAD /= "000" and 
+                                          memwb_writeAD = id_rs)
+                    else rf_read1;
+
+    id_r2reg_fwd <= memwb_writeData when (memwb_we = '1' and 
+                                          memwb_writeAD /= "000" and 
+                                          memwb_writeAD = id_rt)
+                    else rf_read2;
+
     wasJumpOut <= haz_flush_idex;
 
     ID_EX_REG: ID_EX
@@ -456,10 +474,11 @@ begin
             IsR                => ctrl_isR,
             IsReadDigit        => ctrl_isRead,
             IsSW               => ctrl_isSW,
+            RegWrite           => ctrl_regWrite,
             WasJumpOut         => wasJumpOut,
             ALUFunc            => id_alufunc,
-            R1Reg              => rf_read1,
-            R2Reg              => rf_read2,
+            R1Reg              => id_r1reg_fwd,
+            R2Reg              => id_r2reg_fwd,
             Immediate16        => id_imm16,
             R1AD               => id_rs,
             R2AD               => id_rt,       -- RT για forwarding
@@ -473,6 +492,7 @@ begin
             IsR_IDEX           => idex_isR,
             IsReadDigit_IDEX   => idex_isRead,
             IsSW_IDEX          => idex_isSW,
+            RegWrite_IDEX      => idex_regwrite,
             ALUFunc_IDEX       => idex_alufunc,
             R1Reg_IDEX         => idex_r1reg,
             R2Reg_IDEX         => idex_r2reg,
@@ -568,7 +588,7 @@ begin
             clk             => clk,
             isPrint         => idex_isPrint,
             isRead          => idex_isRead,
-            writeEnable     => ctrl_regWrite,
+            writeEnable     => idex_regwrite,  -- από ID_EX pipeline register
             isLW            => idex_isLW,
             Result          => alu_result,
             regAD           => idex_rdad,   -- destination register (RD)
@@ -621,7 +641,8 @@ begin
     debug_memwb_ad   <= memwb_writeAD;
     debug_ctrl_regwr <= ctrl_regWrite;
     debug_exmem_we   <= exmem_we;
-    debug_idex_r2ad  <= idex_rdad;  -- destination register
+    debug_idex_r2ad  <= idex_rdad;
+    debug_memwb_we   <= memwb_we;
 
     -- =========================================================
     -- STAGE 5: WB (Write Back)

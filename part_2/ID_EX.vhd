@@ -15,6 +15,7 @@ entity ID_EX is
         IsR                : in  STD_LOGIC;
         IsReadDigit        : in  STD_LOGIC;
         IsSW               : in  STD_LOGIC;
+        RegWrite           : in  STD_LOGIC;
         WasJumpOut         : in  STD_LOGIC;
         ALUFunc            : in  STD_LOGIC_VECTOR(6 downto 0);  -- opcode(3:0) & func(2:0)
         
@@ -36,6 +37,7 @@ entity ID_EX is
         IsR_IDEX           : out STD_LOGIC;
         IsReadDigit_IDEX   : out STD_LOGIC;
         IsSW_IDEX          : out STD_LOGIC;
+        RegWrite_IDEX      : out STD_LOGIC;
         ALUFunc_IDEX       : out STD_LOGIC_VECTOR(6 downto 0);
         R1Reg_IDEX         : out STD_LOGIC_VECTOR(15 downto 0);
         R2Reg_IDEX         : out STD_LOGIC_VECTOR(15 downto 0);
@@ -63,6 +65,7 @@ begin
                 IsR_IDEX          <= '0';
                 IsReadDigit_IDEX  <= '0';
                 IsSW_IDEX         <= '0';
+                RegWrite_IDEX     <= '0';
             else
                 IsBranch_IDEX     <= isBranch;
                 IsEOR_IDEX        <= isEOR;
@@ -74,6 +77,7 @@ begin
                 IsR_IDEX          <= IsR;
                 IsReadDigit_IDEX  <= IsReadDigit;
                 IsSW_IDEX         <= IsSW;
+                RegWrite_IDEX     <= RegWrite;
                 ALUFunc_IDEX      <= ALUFunc;
                 R1Reg_IDEX        <= R1Reg;
                 R2Reg_IDEX        <= R2Reg;
