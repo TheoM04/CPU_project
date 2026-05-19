@@ -365,7 +365,7 @@ begin
     -- STAGE 1: IF (Instruction Fetch)
     -- =========================================================
 
-    pc_enable  <= not idex_isEOR;
+	 pc_enable <= not trap_eor;
     ifid_flush <= haz_flush_ifid or trap_eor;
     ifid_en    <= '1';
 
