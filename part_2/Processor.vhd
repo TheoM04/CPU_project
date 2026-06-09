@@ -269,8 +269,8 @@ architecture structural of Processor is
     signal ifid_en     : STD_LOGIC;
 
     -- ID Stage
-    -- R-type: op(15:12) | rd(11:9) | rs(8:6) | rt(5:3) | func(2:0)
-    -- I-type: op(15:12) | rd(11:9) | rs(8:6) | immediate(5:0)
+    -- R-type: op(15:12) | rs(11:9) | rt(8:6) | rd(5:3) | func(2:0)
+    -- I-type: op(15:12) | rs(11:9) | offset(8:3) | wrReg(2:0)
     -- J-type: op(15:12) | jumpAddr(11:0)
     signal id_opcode   : STD_LOGIC_VECTOR(3 downto 0);
     signal id_rd       : STD_LOGIC_VECTOR(2 downto 0);
@@ -280,6 +280,7 @@ architecture structural of Processor is
     signal id_imm6     : STD_LOGIC_VECTOR(5 downto 0);
     signal id_imm16    : STD_LOGIC_VECTOR(15 downto 0);
     signal id_jumpaddr : STD_LOGIC_VECTOR(11 downto 0);
+    -- FIX #1: I-type destination register είναι bits 2:0
     signal id_destAD   : STD_LOGIC_VECTOR(2 downto 0);
     signal id_alufunc  : STD_LOGIC_VECTOR(6 downto 0);  -- opcode & func
 
@@ -304,6 +305,13 @@ architecture structural of Processor is
     signal rf_outall : STD_LOGIC_VECTOR(127 downto 0);
     signal id_r1reg_fwd : STD_LOGIC_VECTOR(15 downto 0);
     signal id_r2reg_fwd : STD_LOGIC_VECTOR(15 downto 0);
+    -- FIX #6: SW διαβάζει το Write Register από bits 2:0
+    signal id_rt_or_sw  : STD_LOGIC_VECTOR(2 downto 0);
+
+    -- FIX #2: PC που πρέπει να φτάσει στο EX stage για MFPC/Branch
+    -- Αποθηκεύουμε το ifid_pc στο ID_EX μέσω pipeline register
+    -- Χρησιμοποιούμε ξεχωριστό register για το PC στο EX stage
+    signal idex_pc_ex  : STD_LOGIC_VECTOR(15 downto 0);  -- PC στο EX stage (σωστό)
 
     -- ID/EX outputs
     signal idex_isBranch : STD_LOGIC;
@@ -323,9 +331,8 @@ architecture structural of Processor is
     signal idex_imm16    : STD_LOGIC_VECTOR(15 downto 0);
     signal idex_r1ad     : STD_LOGIC_VECTOR(2 downto 0);
     signal idex_r2ad     : STD_LOGIC_VECTOR(2 downto 0);
-    signal idex_rdad     : STD_LOGIC_VECTOR(2 downto 0);  -- destination register
+    signal idex_rdad     : STD_LOGIC_VECTOR(2 downto 0);
     signal idex_jumpaddr : STD_LOGIC_VECTOR(11 downto 0);
-    signal idex_pc       : STD_LOGIC_VECTOR(15 downto 0);  -- PC gia MFPC
 
     -- EX Stage
     signal fwd_a          : STD_LOGIC_VECTOR(1 downto 0);
@@ -365,7 +372,7 @@ begin
     -- STAGE 1: IF (Instruction Fetch)
     -- =========================================================
 
-	 pc_enable <= not trap_eor;
+    pc_enable <= not trap_eor;
     ifid_flush <= haz_flush_ifid or trap_eor;
     ifid_en    <= '1';
 
@@ -377,11 +384,8 @@ begin
             pc_out => pc_out
         );
 
-    -- Διεύθυνση προς instruction memory
     instrAd <= pc_out;
-
-    -- regOut: pc_out (143..128) & OUTall (127..0)
-    regOut <= pc_out & rf_outall;
+    regOut  <= pc_out & rf_outall;
 
     IF_ID_REG: IF_ID
         port map (
@@ -390,26 +394,34 @@ begin
             flush          => ifid_flush,
             inPC           => pc_out,
             inInstruction  => instr,
-            outPC          => ifid_pc,
+            outPC          => ifid_pc,       -- ifid_pc = PC+2 της εντολής στο ID stage
             outInstruction => ifid_instr
         );
 
     -- =========================================================
     -- STAGE 2: ID (Instruction Decode)
     -- =========================================================
-    -- R-type: op(15:12) | rd(11:9) | rs(8:6) | rt(5:3) | func(2:0)
-    -- I-type: op(15:12) | rd(11:9) | rs(8:6) | immediate(5:0)
+    -- R-type: op(15:12) | rs(11:9) | rt(8:6)  | rd(5:3)    | func(2:0)
+    -- I-type: op(15:12) | rs(11:9) | offset(8:3)            | wrReg(2:0)
     -- J-type: op(15:12) | jumpAddr(11:0)
 
     id_opcode   <= ifid_instr(15 downto 12);
-    id_rs       <= ifid_instr(11 downto 9);  -- rs
-    id_rt       <= ifid_instr(8  downto 6);  -- rt
-    id_rd       <= ifid_instr(5  downto 3);  -- rd (destination)
+    id_rs       <= ifid_instr(11 downto 9);
+    id_rt       <= ifid_instr(8  downto 6);
+    id_rd       <= ifid_instr(5  downto 3);
     id_func     <= ifid_instr(2  downto 0);
-    id_imm6     <= ifid_instr(5  downto 0);
+    id_imm6     <= ifid_instr(8  downto 3);  -- FIX: I-type offset είναι bits 8:3
     id_jumpaddr <= ifid_instr(11 downto 0);
     id_alufunc  <= id_opcode & id_func;
-    id_destAD   <= id_rd;
+
+    -- FIX #6: SW: το register που γράφεται στη μνήμη είναι στα bits 2:0
+    id_rt_or_sw <= ifid_instr(2 downto 0) when (ctrl_isSW = '1') else id_rt;
+
+    -- FIX #1: Σωστό destination register ανάλογα με τον τύπο εντολής
+    -- R-type: destination = rd = bits 5:3
+    -- I-type (LW, ReadDigit, MFPC): destination = bits 2:0
+    id_destAD <= id_rd when (ctrl_isR = '1')
+                 else ifid_instr(2 downto 0);
 
     SE: sign_extender
         port map (
@@ -440,8 +452,6 @@ begin
             EOR    => trap_eor
         );
 
-    -- Register File: διαβάζει rs και rt
-    -- Γράφει από το WB stage
     RF: register_file
         port map (
             clk         => clk,
@@ -449,22 +459,20 @@ begin
             write1AD    => memwb_writeAD,
             write1      => memwb_writeData,
             readAD1     => id_rs,
-            readAD2     => id_rt,
+            readAD2     => id_rt_or_sw,
             Read1       => rf_read1,
             Read2       => rf_read2,
             OUTall      => rf_outall
         );
 
-    -- WB forwarding: αν ο register που γράφεται (WB) είναι ο ίδιος
-    -- με αυτόν που διαβάζεται (ID), χρησιμοποιούμε το WB data
-    -- αντί το register file output
-    id_r1reg_fwd <= memwb_writeData when (memwb_we = '1' and 
-                                          memwb_writeAD /= "000" and 
+    -- WB forwarding στο ID stage
+    id_r1reg_fwd <= memwb_writeData when (memwb_we = '1' and
+                                          memwb_writeAD /= "000" and
                                           memwb_writeAD = id_rs)
                     else rf_read1;
 
-    id_r2reg_fwd <= memwb_writeData when (memwb_we = '1' and 
-                                          memwb_writeAD /= "000" and 
+    id_r2reg_fwd <= memwb_writeData when (memwb_we = '1' and
+                                          memwb_writeAD /= "000" and
                                           memwb_writeAD = id_rt)
                     else rf_read2;
 
@@ -491,7 +499,7 @@ begin
             Immediate16        => id_imm16,
             R1AD               => id_rs,
             R2AD               => id_rt,
-            RdAD               => id_destAD,
+            RdAD               => id_destAD,      -- FIX #1: σωστό destination
             JumpShortAddr      => id_jumpaddr,
             IsBranch_IDEX      => idex_isBranch,
             IsEOR_IDEX         => idex_isEOR,
@@ -514,14 +522,30 @@ begin
             JumpShortAddr_IDEX => idex_jumpaddr
         );
 
+    -- FIX #2: Το PC της εντολής στο EX stage
+    -- Το ifid_pc είναι το PC+2 της εντολής που ΤΩΡΑ βρίσκεται στο ID stage.
+    -- Η εντολή που βρίσκεται στο EX stage είχε το PC+2 = ifid_pc του προηγούμενου
+    -- κύκλου. Το pipeline register ID_EX δεν μεταφέρει το PC, οπότε
+    -- χρησιμοποιούμε ένα απλό D-register για να το καθυστερήσουμε 1 κύκλο.
+    process(clk)
+    begin
+        if rising_edge(clk) then
+            if wasJumpOut = '1' then
+                idex_pc_ex <= (others => '0');
+            else
+                idex_pc_ex <= ifid_pc;  -- καθυστέρηση 1 κύκλο = PC+2 στο EX
+            end if;
+        end if;
+    end process;
+
     -- =========================================================
     -- STAGE 3: EX (Execute)
     -- =========================================================
 
     FWD: forwarding_unit
         port map (
-            RS          => idex_r1ad,    -- RS address
-            RT          => idex_r2ad,    -- RT address
+            RS          => idex_r1ad,
+            RT          => idex_r2ad,
             regAD_EXMEM => exmem_regAD,
             regAD_MEMWB => memwb_writeAD,
             we_EXMEM    => exmem_we,
@@ -548,12 +572,8 @@ begin
             final_out   => alu_in_b
         );
 
-    -- To PC pernaei kai apo to ID_EX register gia MFPC
-    -- ifid_pc = PC+2 ths entolis pou twra einai sto EX stage (exei hdh perasei to ID_EX)
-    idex_pc <= ifid_pc;
-
-    -- MFPC: ALU_A = PC+2 ths trexousas entolis
-    alu_a_final <= idex_pc when (idex_isMFPC = '1') else alu_in_a;
+    -- FIX #2: MFPC χρησιμοποιεί το σωστό PC του EX stage
+    alu_a_final <= idex_pc_ex when (idex_isMFPC = '1') else alu_in_a;
 
     -- LW/SW: ALU_B = immediate (address = RS + offset)
     alu_b_final <= idex_imm16 when (idex_isLW = '1' or idex_isSW = '1')
@@ -561,8 +581,8 @@ begin
 
     ALU_CTRL: alu_control
         port map (
-            opcode => idex_alufunc(6 downto 3),  -- bits 6:3 = opcode
-            func   => idex_alufunc(2 downto 0),  -- bits 2:0 = func
+            opcode => idex_alufunc(6 downto 3),
+            func   => idex_alufunc(2 downto 0),
             alu_op => alu_op
         );
 
@@ -575,8 +595,8 @@ begin
             overflow => alu_overflow
         );
 
-    branch_ad <= idex_pc + idex_imm16;  -- branch = PC_EX + offset
-    jump_ad   <= "0000" & idex_jumpaddr;
+    -- FIX #3: Branch address χρησιμοποιεί το σωστό PC του EX stage
+    branch_ad <= idex_pc_ex + idex_imm16;
 
     HAZ: hazard_unit
         port map (
@@ -588,6 +608,11 @@ begin
             flush_IDEX => haz_flush_idex,
             JRopcode   => haz_jropcode
         );
+
+    -- FIX #4: JR: η διεύθυνση άλματος είναι το Rs register (alu_in_a)
+    -- Για JR: jump_ad_final = alu_in_a (τιμή register Rs)
+    -- Για κανονικό Jump: jump_ad_final = "0000" & idex_jumpaddr
+    jump_ad <= alu_in_a when (idex_isJR = '1') else "0000" & idex_jumpaddr;
 
     JR_SEL: JRSelector
         port map (
@@ -608,7 +633,7 @@ begin
             isSW            => idex_isSW,
             Result          => alu_result,
             regAD           => idex_rdad,
-            R2Reg           => alu_in_b,
+            R2Reg           => idex_r2reg,  -- FIX #5: SW χρειάζεται την τιμή του register, όχι το immediate
             out_isPrint     => exmem_isPrint,
             out_isRead      => exmem_isRead,
             out_writeEnable => exmem_we,
@@ -623,19 +648,15 @@ begin
     -- STAGE 4: MEM (Memory Access)
     -- =========================================================
 
-    -- PrintDigit
     printEnable <= exmem_isPrint;
     printData   <= exmem_result;
-    printCode   <= exmem_result;  -- ίδια τιμή με printData
+    printCode   <= exmem_result;
 
-    -- ReadDigit
     keyEnable <= exmem_isRead;
 
-    -- SW: γράψε στη data memory
-    -- SW: grapse sti data memory mono otan einai SW (oxi LW)
     dataWriteFlag <= exmem_isSW;
-    dataAd        <= exmem_result;   -- διεύθυνση = αποτέλεσμα ALU
-    toData        <= exmem_r2reg;    -- δεδομένα = RT register
+    dataAd        <= exmem_result;
+    toData        <= exmem_r2reg;
 
     MEM_WB_REG: MEM_WB
         port map (
@@ -666,6 +687,5 @@ begin
     -- STAGE 5: WB (Write Back)
     -- =========================================================
     -- Το write back γίνεται μέσω του register_file παραπάνω
-    -- memwb_we έρχεται από MEM_WB register (writeEnable_out)
 
 end structural;
