@@ -15,12 +15,12 @@ entity IF_ID is
 end IF_ID;
 
 architecture behavioral of IF_ID is
-    signal pcPlus2 : STD_LOGIC_VECTOR(15 downto 0);
+	 signal pcPlus2 : STD_LOGIC_VECTOR(15 downto 0);
 begin
-    pcPlus2 <= inPC + 2;
-
+	 pcPlus2 <= inPC + 2;
     process(clk)
     begin
+	 
         if rising_edge(clk) then
             if flush = '1' then
                 outPC          <= (others => '0');
