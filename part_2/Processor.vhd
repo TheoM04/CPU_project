@@ -269,9 +269,6 @@ architecture structural of Processor is
     signal ifid_en     : STD_LOGIC;
 
     -- ID Stage
-    -- R-type: op(15:12) | rs(11:9) | rt(8:6) | rd(5:3) | func(2:0)
-    -- I-type: op(15:12) | rs(11:9) | offset(8:3) | wrReg(2:0)
-    -- J-type: op(15:12) | jumpAddr(11:0)
     signal id_opcode   : STD_LOGIC_VECTOR(3 downto 0);
     signal id_rd       : STD_LOGIC_VECTOR(2 downto 0);
     signal id_rs       : STD_LOGIC_VECTOR(2 downto 0);
@@ -280,7 +277,6 @@ architecture structural of Processor is
     signal id_imm6     : STD_LOGIC_VECTOR(5 downto 0);
     signal id_imm16    : STD_LOGIC_VECTOR(15 downto 0);
     signal id_jumpaddr : STD_LOGIC_VECTOR(11 downto 0);
-    -- FIX #1: I-type destination register είναι bits 2:0
     signal id_destAD   : STD_LOGIC_VECTOR(2 downto 0);
     signal id_alufunc  : STD_LOGIC_VECTOR(6 downto 0);  -- opcode & func
 
@@ -305,13 +301,9 @@ architecture structural of Processor is
     signal rf_outall : STD_LOGIC_VECTOR(127 downto 0);
     signal id_r1reg_fwd : STD_LOGIC_VECTOR(15 downto 0);
     signal id_r2reg_fwd : STD_LOGIC_VECTOR(15 downto 0);
-    -- FIX #6: SW διαβάζει το Write Register από bits 2:0
     signal id_rt_or_sw  : STD_LOGIC_VECTOR(2 downto 0);
 
-    -- FIX #2: PC που πρέπει να φτάσει στο EX stage για MFPC/Branch
-    -- Αποθηκεύουμε το ifid_pc στο ID_EX μέσω pipeline register
-    -- Χρησιμοποιούμε ξεχωριστό register για το PC στο EX stage
-    signal idex_pc_ex  : STD_LOGIC_VECTOR(15 downto 0);  -- PC στο EX stage (σωστό)
+    signal idex_pc_ex  : STD_LOGIC_VECTOR(15 downto 0);
 
     -- ID/EX outputs
     signal idex_isBranch : STD_LOGIC;
@@ -401,25 +393,18 @@ begin
     -- =========================================================
     -- STAGE 2: ID (Instruction Decode)
     -- =========================================================
-    -- R-type: op(15:12) | rs(11:9) | rt(8:6)  | rd(5:3)    | func(2:0)
-    -- I-type: op(15:12) | rs(11:9) | offset(8:3)            | wrReg(2:0)
-    -- J-type: op(15:12) | jumpAddr(11:0)
 
     id_opcode   <= ifid_instr(15 downto 12);
     id_rs       <= ifid_instr(11 downto 9);
     id_rt       <= ifid_instr(8  downto 6);
     id_rd       <= ifid_instr(5  downto 3);
     id_func     <= ifid_instr(2  downto 0);
-    id_imm6     <= ifid_instr(8  downto 3);  -- FIX: I-type offset είναι bits 8:3
+    id_imm6     <= ifid_instr(8  downto 3);
     id_jumpaddr <= ifid_instr(11 downto 0);
     id_alufunc  <= id_opcode & id_func;
 
-    -- FIX #6: SW: το register που γράφεται στη μνήμη είναι στα bits 2:0
     id_rt_or_sw <= ifid_instr(2 downto 0) when (ctrl_isSW = '1') else id_rt;
 
-    -- FIX #1: Σωστό destination register ανάλογα με τον τύπο εντολής
-    -- R-type: destination = rd = bits 5:3
-    -- I-type (LW, ReadDigit, MFPC): destination = bits 2:0
     id_destAD <= id_rd when (ctrl_isR = '1')
                  else ifid_instr(2 downto 0);
 
@@ -499,7 +484,7 @@ begin
             Immediate16        => id_imm16,
             R1AD               => id_rs,
             R2AD               => id_rt,
-            RdAD               => id_destAD,      -- FIX #1: σωστό destination
+            RdAD               => id_destAD,
             JumpShortAddr      => id_jumpaddr,
             IsBranch_IDEX      => idex_isBranch,
             IsEOR_IDEX         => idex_isEOR,
@@ -522,11 +507,6 @@ begin
             JumpShortAddr_IDEX => idex_jumpaddr
         );
 
-    -- FIX #2: Το PC της εντολής στο EX stage
-    -- Το ifid_pc είναι το PC+2 της εντολής που ΤΩΡΑ βρίσκεται στο ID stage.
-    -- Η εντολή που βρίσκεται στο EX stage είχε το PC+2 = ifid_pc του προηγούμενου
-    -- κύκλου. Το pipeline register ID_EX δεν μεταφέρει το PC, οπότε
-    -- χρησιμοποιούμε ένα απλό D-register για να το καθυστερήσουμε 1 κύκλο.
     process(clk)
     begin
         if rising_edge(clk) then
@@ -572,7 +552,6 @@ begin
             final_out   => alu_in_b
         );
 
-    -- FIX #2: MFPC χρησιμοποιεί το σωστό PC του EX stage
     alu_a_final <= idex_pc_ex when (idex_isMFPC = '1') else alu_in_a;
 
     -- LW/SW: ALU_B = immediate (address = RS + offset)
@@ -595,7 +574,6 @@ begin
             overflow => alu_overflow
         );
 
-    -- FIX #3: Branch address χρησιμοποιεί το σωστό PC του EX stage
     branch_ad <= idex_pc_ex + idex_imm16;
 
     HAZ: hazard_unit
@@ -609,7 +587,7 @@ begin
             JRopcode   => haz_jropcode
         );
 
-    -- FIX #4: JR: η διεύθυνση άλματος είναι το Rs register (alu_in_a)
+
     -- Για JR: jump_ad_final = alu_in_a (τιμή register Rs)
     -- Για κανονικό Jump: jump_ad_final = "0000" & idex_jumpaddr
     jump_ad <= alu_in_a when (idex_isJR = '1') else "0000" & idex_jumpaddr;
@@ -633,7 +611,7 @@ begin
             isSW            => idex_isSW,
             Result          => alu_result,
             regAD           => idex_rdad,
-            R2Reg           => idex_r2reg,  -- FIX #5: SW χρειάζεται την τιμή του register, όχι το immediate
+            R2Reg           => idex_r2reg,
             out_isPrint     => exmem_isPrint,
             out_isRead      => exmem_isRead,
             out_writeEnable => exmem_we,

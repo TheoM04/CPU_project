@@ -95,7 +95,6 @@ set_global_assignment -name VHDL_FILE PC_Register.vhd
 set_global_assignment -name VHDL_FILE Selector.vhd
 set_global_assignment -name VHDL_FILE TrapUnit.vhd
 set_global_assignment -name VHDL_FILE Processor.vhd
-set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform.vwf
 set_global_assignment -name VECTOR_WAVEFORM_FILE lw1_lw2_add.vwf
 set_global_assignment -name VECTOR_WAVEFORM_FILE jump.vwf
 set_global_assignment -name VECTOR_WAVEFORM_FILE sw.vwf
@@ -106,6 +105,11 @@ set_global_assignment -name VECTOR_WAVEFORM_FILE if_id.vwf
 set_global_assignment -name VECTOR_WAVEFORM_FILE hazard_unit.vwf
 set_global_assignment -name VECTOR_WAVEFORM_FILE forwarding_unit.vwf
 set_global_assignment -name VECTOR_WAVEFORM_FILE ex_mem.vwf
+set_global_assignment -name VECTOR_WAVEFORM_FILE alu_control_wvf.vwf
+set_global_assignment -name VECTOR_WAVEFORM_FILE register_control_wvf.vwf
+set_global_assignment -name VECTOR_WAVEFORM_FILE pc_register_wvf.vwf
+set_global_assignment -name VECTOR_WAVEFORM_FILE selector_wvf.vwf
+set_global_assignment -name VECTOR_WAVEFORM_FILE trap_unit_wvf.vwf
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
