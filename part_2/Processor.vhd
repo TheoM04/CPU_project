@@ -2,11 +2,6 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
--- =========================================================
--- RISC Pipelined Processor
--- Stages: IF -> ID -> EX -> MEM -> WB
--- =========================================================
-
 entity Processor is
     Port (
         clk           : in  STD_LOGIC;
@@ -38,9 +33,7 @@ end Processor;
 
 architecture structural of Processor is
 
-    -- =========================================================
     -- COMPONENT DECLARATIONS
-    -- =========================================================
 
     component PC_Register is
         Port (
@@ -255,9 +248,7 @@ architecture structural of Processor is
         );
     end component;
 
-    -- =========================================================
     -- SIGNALS
-    -- =========================================================
 
     -- IF Stage
     signal pc_out      : STD_LOGIC_VECTOR(15 downto 0);
@@ -360,9 +351,7 @@ architecture structural of Processor is
 
 begin
 
-    -- =========================================================
-    -- STAGE 1: IF (Instruction Fetch)
-    -- =========================================================
+    -- STAGE 1: IF
 
     pc_enable <= not trap_eor;
     ifid_flush <= haz_flush_ifid or trap_eor;
@@ -390,9 +379,7 @@ begin
             outInstruction => ifid_instr
         );
 
-    -- =========================================================
-    -- STAGE 2: ID (Instruction Decode)
-    -- =========================================================
+    -- STAGE 2: ID
 
     id_opcode   <= ifid_instr(15 downto 12);
     id_rs       <= ifid_instr(11 downto 9);
@@ -513,14 +500,12 @@ begin
             if wasJumpOut = '1' then
                 idex_pc_ex <= (others => '0');
             else
-                idex_pc_ex <= ifid_pc;  -- καθυστέρηση 1 κύκλο = PC+2 στο EX
+                idex_pc_ex <= ifid_pc;
             end if;
         end if;
     end process;
 
-    -- =========================================================
-    -- STAGE 3: EX (Execute)
-    -- =========================================================
+    -- STAGE 3: EX
 
     FWD: forwarding_unit
         port map (
@@ -622,9 +607,7 @@ begin
             out_R2Reg       => exmem_r2reg
         );
 
-    -- =========================================================
-    -- STAGE 4: MEM (Memory Access)
-    -- =========================================================
+    -- STAGE 4: MEM
 
     printEnable <= exmem_isPrint;
     printData   <= exmem_result;
@@ -661,9 +644,7 @@ begin
     debug_idex_r2ad  <= idex_rdad;
     debug_memwb_we   <= memwb_we;
 
-    -- =========================================================
-    -- STAGE 5: WB (Write Back)
-    -- =========================================================
+    -- STAGE 5: WB
     -- Το write back γίνεται μέσω του register_file παραπάνω
 
 end structural;
